@@ -97,4 +97,3 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
 
 st.divider()
 st.caption("Simulator Mixed Mode | i5 Gen 13 Cloud | v1.5")
-
