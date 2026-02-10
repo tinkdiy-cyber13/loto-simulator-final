@@ -41,12 +41,13 @@ st.markdown(
 )
 st.write("---")
 
-# --- ZONA DE INPUT (Pătratul 1) ---
+# --- ZONA DE INPUT ---
 with st.container():
     st.subheader("📥 Configurare Simulări")
     col_in1, col_in2 = st.columns(2)
     with col_in1:
-        tip_joc = st.selectbox("Câte numere vrei să verifici?",, index=0)
+        # AM REPARAT AICI: Am scos virgula dublă
+        tip_joc = st.selectbox("Câte numere vrei să verifici?", [1, 2, 3, 4, 5, 6, 7, 8], index=3)
     with col_in2:
         input_numere = st.text_input("Introdu numerele (cu spațiu):", "1 11 22 33")
 
@@ -63,7 +64,7 @@ if st.button("🚀 LANSEAZĂ SIMULAREA"):
             status = st.empty()
             progress = st.progress(0)
             start_time = time.time()
-            max_sim = 1000000 # Rulăm un milion de extrageri
+            max_sim = 1000000 
             gasit = False
             
             for i in range(1, max_sim + 1):
@@ -81,7 +82,7 @@ if st.button("🚀 LANSEAZĂ SIMULAREA"):
                     c3.metric("🎲 Extragerea Nr.", f"{i:,}")
                     c4.metric("⏱️ Timp Calcul", f"{time.time() - start_time:.2f}s")
                     
-                    # --- AFIȘARE PĂTRATE TIMP (Ani, Luni, Zile) ---
+                    # --- AFIȘARE PĂTRATE TIMP ---
                     st.write("### 📅 Timp de așteptare estimat (la 2 extrageri/zi):")
                     zile = i / 2
                     ani = zile / 365
@@ -105,6 +106,3 @@ if st.button("🚀 LANSEAZĂ SIMULAREA"):
 
 st.divider()
 st.caption("Simulator Profesional | Protocol OO-V7 | Hardware i5 Cloud")
-
-
-
