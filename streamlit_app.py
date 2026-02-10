@@ -5,7 +5,7 @@ import json
 import os
 
 # Configurare Pagina
-st.set_page_config(page_title="Loto Sim Pro v1.5.1", page_icon="🎰", layout="wide")
+st.set_page_config(page_title="Loto Sim Pro v1.6", page_icon="🎰", layout="wide")
 
 DB_FILE = "baza_sim_vizite.json"
 
@@ -33,7 +33,6 @@ st.write("---")
 # --- ZONA DE INPUT ---
 col_in1, col_in2 = st.columns(2)
 with col_in1:
-    # REPARAT: Am lăsat o singură virgulă aici
     tip_joc = st.selectbox("Câte numere verifici?", [1,2,3,4,5,6,7,8], index=3)
 with col_in2:
     input_numere = st.text_input("Introdu numerele tale:", "1 2 3 4")
@@ -45,12 +44,13 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
         if len(mele) != tip_joc:
             st.error(f"Pune fix {tip_joc} numere!")
         else:
-            status = st.empty()
+            # --- "CLEPSIDRA" VIZUALĂ ---
+            monitor = st.empty()
             progress = st.progress(0)
+            
             start_time = time.time()
             max_sim = 2000000 
             gasit = False
-            
             urna = list(range(1, 81))
             
             for i in range(1, max_sim + 1):
@@ -66,7 +66,7 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
                     <div style='display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;'>
                         <span style='background:#003366; color:white; padding:8px 15px; border-radius:8px; font-size:16px; font-weight:bold; border: 1px solid #22d3ee;'>🔢 Nr: {sorted(list(mele))}</span>
                         <span style='background:#003366; color:white; padding:8px 15px; border-radius:8px; font-size:16px; font-weight:bold; border: 1px solid #22d3ee;'>🎲 Extragere: {i:,}</span>
-                        <span style='background:#003366; color:white; padding:8px 15px; border-radius:8px; font-size:16px; font-weight:bold; border: 1px solid #22d3ee;'>⏱️  Speed: {time.time()-start_time:.2f}s</span>
+                        <span style='background:#003366; color:white; padding:8px 15px; border-radius:8px; font-size:16px; font-weight:bold; border: 1px solid #22d3ee;'>⏱️ Speed: {time.time()-start_time:.2f}s</span>
                     </div>
                     """
                     st.markdown(res_html, unsafe_allow_html=True)
@@ -83,9 +83,19 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
                     t_col3.metric("Ani", ani)
                     break
                 
-                if i % 100000 == 0:
+                # --- ACTUALIZARE MONITOR (CLEPSIDRA) ---
+                if i % 25000 == 0: # Actualizăm mai des pentru efect vizual
+                    elaps = time.time() - start_time
                     progress.progress(i / max_sim)
-                    status.text(f"🔍 Agităm urna... Extragerea nr: {i:,}")
+                    monitor.markdown(f"""
+                        <div style='background:#1e1e1e; padding:20px; border-radius:10px; border-left: 5px solid #22d3ee;'>
+                            <h4 style='color:#22d3ee; margin:0;'>⏳ ANALIZĂ ÎN CURS...</h4>
+                            <p style='font-family:monospace; font-size:20px; color:white; margin:10px 0;'>
+                                🎲 Extrageri procesate: <b>{i:,}</b><br>
+                                ⏱️ Timp scurs: <b>{elaps:.1f} secunde</b>
+                            </p>
+                        </div>
+                    """, unsafe_allow_html=True)
 
             if not gasit:
                 st.warning(f"După {max_sim:,} încercări agitate, nu a ieșit încă.")
@@ -93,6 +103,7 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
         st.error("Eroare la procesare!")
 
 st.divider()
-st.caption("Simulator Mixed Mode | i5 Cloud | v1.5.1")
+st.caption("Simulator Mixed Mode | Real-Time Tracker | v1.6")
+
 
 
