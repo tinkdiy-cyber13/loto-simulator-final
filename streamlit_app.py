@@ -66,7 +66,7 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
                     <div style='display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;'>
                         <span style='background:#003366; color:white; padding:8px 15px; border-radius:8px; font-size:16px; font-weight:bold; border: 1px solid #22d3ee;'>🔢 Nr: {sorted(list(mele))}</span>
                         <span style='background:#003366; color:white; padding:8px 15px; border-radius:8px; font-size:16px; font-weight:bold; border: 1px solid #22d3ee;'>🎲 Extragere: {i:,}</span>
-                        <span style='background:#003366; color:white; padding:8px 15px; border-radius:8px; font-size:16px; font-weight:bold; border: 1px solid #22d3ee;'>⏱️ i5 Speed: {time.time()-start_time:.2f}s</span>
+                        <span style='background:#003366; color:white; padding:8px 15px; border-radius:8px; font-size:16px; font-weight:bold; border: 1px solid #22d3ee;'>⏱️  Speed: {time.time()-start_time:.2f}s</span>
                     </div>
                     """
                     st.markdown(res_html, unsafe_allow_html=True)
@@ -94,4 +94,5 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
 
 st.divider()
 st.caption("Simulator Mixed Mode | i5 Cloud | v1.5.1")
+
 
