@@ -5,7 +5,7 @@ import json
 import os
 
 # Configurare Pagina
-st.set_page_config(page_title="Loto Sim Pro v1.5", page_icon="🎰", layout="wide")
+st.set_page_config(page_title="Loto Sim Pro v1.5.1", page_icon="🎰", layout="wide")
 
 DB_FILE = "baza_sim_vizite.json"
 
@@ -33,7 +33,8 @@ st.write("---")
 # --- ZONA DE INPUT ---
 col_in1, col_in2 = st.columns(2)
 with col_in1:
-    tip_joc = st.selectbox("Câte numere verifici?",, index=3)
+    # REPARAT: Am lăsat o singură virgulă aici
+    tip_joc = st.selectbox("Câte numere verifici?", [1,2,3,4,5,6,7,8], index=3)
 with col_in2:
     input_numere = st.text_input("Introdu numerele tale:", "1 2 3 4")
 
@@ -47,14 +48,12 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
             status = st.empty()
             progress = st.progress(0)
             start_time = time.time()
-            max_sim = 2000000 # Am urcat la 2 milioane pentru i5
+            max_sim = 2000000 
             gasit = False
             
-            # Pregatim urna (1-80)
             urna = list(range(1, 81))
             
             for i in range(1, max_sim + 1):
-                # --- AMESTECARE FORȚATĂ (Să fie ca în realitate) ---
                 random.shuffle(urna) 
                 extragere = set(random.sample(urna, 20))
                 
@@ -62,7 +61,7 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
                     gasit = True
                     st.balloons()
                     
-                    st.markdown("### 📊 Rezultate Simulare (Mixed)")
+                    st.markdown("### 📊 Rezultate Simulare (Mixed Mode)")
                     res_html = f"""
                     <div style='display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;'>
                         <span style='background:#003366; color:white; padding:8px 15px; border-radius:8px; font-size:16px; font-weight:bold; border: 1px solid #22d3ee;'>🔢 Nr: {sorted(list(mele))}</span>
@@ -72,14 +71,12 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
                     """
                     st.markdown(res_html, unsafe_allow_html=True)
                     
-                    # --- CALCUL TIMP (2 extrageri/zi, 7 zile/sapt) ---
-                    # i (numar extrageri) / 2 (pe zi) = zile
                     zile_tot = i / 2
                     ani = int(zile_tot // 365)
                     luni = int((zile_tot % 365) // 30)
                     zile = int(zile_tot % 30)
                     
-                    st.write(f"#### 📅 Timp estimat (la 2 trageri/zi - Zilnic):")
+                    st.write(f"#### 📅 Timp estimat de așteptare:")
                     t_col1, t_col2, t_col3 = st.columns(3)
                     t_col1.metric("Zile", zile)
                     t_col2.metric("Luni", luni)
@@ -91,9 +88,10 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
                     status.text(f"🔍 Agităm urna... Extragerea nr: {i:,}")
 
             if not gasit:
-                st.warning(f"După {max_sim:,} de încercări agitate, varianta nu a ieșit. i5-ul recomandă altă schemă!")
+                st.warning(f"După {max_sim:,} încercări agitate, nu a ieșit încă.")
     except:
         st.error("Eroare la procesare!")
 
 st.divider()
-st.caption("Simulator Mixed Mode | i5 Gen 13 Cloud | v1.5")
+st.caption("Simulator Mixed Mode | i5 Cloud | v1.5.1")
+
