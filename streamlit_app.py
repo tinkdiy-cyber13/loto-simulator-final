@@ -1,22 +1,54 @@
 import streamlit as st
 import random
 import time
-import pandas as pd
+import json
+import os
 
-# Configurare Pagina (Aspect Modern)
-st.set_page_config(page_title="Loto Sim Pro v1.1", page_icon="🎰", layout="wide")
+# Configurare Pagina
+st.set_page_config(page_title="Loto Sim Pro v1.2", page_icon="🎰", layout="wide")
 
-st.title("🎰 Simulator Loto 20/80 - Bord de Control")
+DB_FILE = "baza_sim_vizite.json"
+
+# --- FUNCTII BAZA DE DATE (CONTOR OO) ---
+def incarca_vizite():
+    if os.path.exists(DB_FILE):
+        try:
+            with open(DB_FILE, "r") as f: return json.load(f)
+        except: return {"vizite": 0}
+    return {"vizite": 0}
+
+def salveaza_vizite(date):
+    with open(DB_FILE, "w") as f: json.dump(date, f)
+
+date_sistem = incarca_vizite()
+
+if 'v' not in st.session_state:
+    date_sistem["vizite"] = date_sistem.get("vizite", 0) + 1
+    salveaza_vizite(date_sistem)
+    st.session_state['v'] = True
+
+# --- TITLU SI CONTOR OO ---
+st.title("🎰 Simulator Loto 20/80")
+st.markdown(
+    f"""
+    <div style='text-align: right; margin-top: -55px;'>
+        <span style='color: #22d3ee; font-size: 16px; font-weight: bold; border: 2px solid #22d3ee; padding: 4px 12px; border-radius: 15px; background-color: rgba(34, 211, 238, 0.1);'>
+            OO: {date_sistem.get('vizite', 0)}
+        </span>
+    </div>
+    """, 
+    unsafe_allow_html=True
+)
 st.write("---")
 
 # --- ZONA DE INPUT (Pătratul 1) ---
 with st.container():
-    st.subheader("📥 Configurare Bilete")
-    col_in1, col_in2 = st.columns([1, 2])
+    st.subheader("📥 Configurare Simulări")
+    col_in1, col_in2 = st.columns(2)
     with col_in1:
-        tip_joc = st.selectbox("Câte numere joci?",, index=0)
+        tip_joc = st.selectbox("Câte numere vrei să verifici?",, index=0)
     with col_in2:
-        input_numere = st.text_input("Scrie numerele tale (cu spațiu):", "1 11 22 33")
+        input_numere = st.text_input("Introdu numerele (cu spațiu):", "1 11 22 33")
 
 st.divider()
 
@@ -26,13 +58,12 @@ if st.button("🚀 LANSEAZĂ SIMULAREA"):
         mele = set([int(n) for n in input_numere.replace(",", " ").split() if n.strip().isdigit()])
         
         if len(mele) != tip_joc:
-            st.error(f"Eroare: Ai ales joc de {tip_joc} numere, dar ai scris {len(mele)}!")
+            st.error(f"Eroare: Ai ales {tip_joc} numere, dar ai scris {len(mele)}!")
         else:
             status = st.empty()
             progress = st.progress(0)
-            
             start_time = time.time()
-            max_sim = 1000000
+            max_sim = 1000000 # Rulăm un milion de extrageri
             gasit = False
             
             for i in range(1, max_sim + 1):
@@ -40,41 +71,40 @@ if st.button("🚀 LANSEAZĂ SIMULAREA"):
                 
                 if mele.issubset(extragere):
                     gasit = True
-                    # --- INTERFAȚA PE PĂTRATE (Rezultat) ---
                     st.balloons()
                     st.success("🎯 REZULTAT GĂSIT!")
                     
-                    # Rândul 1 de Pătrate
-                    c1, c2, c3 = st.columns(3)
+                    # --- AFIȘARE PĂTRATE REZULTAT ---
+                    c1, c2, c3, c4 = st.columns(4)
                     c1.metric("🔢 Numerele Tale", str(sorted(list(mele))))
-                    c2.metric("✅ Numere Verificate", f"{tip_joc} din {tip_joc}")
-                    c3.metric("🎲 Extragerile", f"{i:,}")
+                    c2.metric("✅ Verificate", f"{tip_joc}/{tip_joc}")
+                    c3.metric("🎲 Extragerea Nr.", f"{i:,}")
+                    c4.metric("⏱️ Timp Calcul", f"{time.time() - start_time:.2f}s")
                     
-                    # Rândul 2 de Pătrate (Timpul)
+                    # --- AFIȘARE PĂTRATE TIMP (Ani, Luni, Zile) ---
+                    st.write("### 📅 Timp de așteptare estimat (la 2 extrageri/zi):")
                     zile = i / 2
                     ani = zile / 365
                     luni = (ani - int(ani)) * 12
                     
-                    st.write("### 📅 Timp de așteptare estimat:")
                     p1, p2, p3 = st.columns(3)
                     p1.metric("Ani", int(ani))
                     p2.metric("Luni", int(luni))
                     p3.metric("Zile", int(zile % 30))
-                    
-                    st.info(f"⏱️ Calcul finalizat în {time.time() - start_time:.2f} secunde.")
                     break
                 
                 if i % 100000 == 0:
                     progress.progress(i / max_sim)
-                    status.text(f"Se verifică extragerea nr: {i:,}...")
+                    status.text(f"🔍 Se verifică extragerea: {i:,}...")
 
             if not gasit:
-                st.warning(f"Nu a ieșit în {max_sim:,} încercări. Matematica e crudă!")
+                st.warning(f"Nu a ieșit în {max_sim:,} încercări. i5-ul zice să mai încerci!")
                 
     except Exception as e:
-        st.error("Verifică formatul numerelor!")
+        st.error("Verifică numerele introduse!")
 
-# --- FOOTER ---
 st.divider()
-st.caption("Hardware: i5 Gen 13 Virtualized | Protocol: OO-Cloud")
+st.caption("Simulator Profesional | Protocol OO-V7 | Hardware i5 Cloud")
+
+
 
