@@ -5,7 +5,7 @@ import json
 import os
 
 # Configurare Pagina
-st.set_page_config(page_title="Loto Sim Pro v1.6", page_icon="🎰", layout="wide")
+st.set_page_config(page_title="Loto Sim Pro v1.6.1", page_icon="🎰", layout="wide")
 
 DB_FILE = "baza_sim_vizite.json"
 
@@ -44,7 +44,7 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
         if len(mele) != tip_joc:
             st.error(f"Pune fix {tip_joc} numere!")
         else:
-            # --- "CLEPSIDRA" VIZUALĂ ---
+            # --- ZONA CLEPSIDRĂ ---
             monitor = st.empty()
             progress = st.progress(0)
             
@@ -53,14 +53,21 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
             gasit = False
             urna = list(range(1, 81))
             
+            # --- ÎNCEPUT CALCUL ---
             for i in range(1, max_sim + 1):
                 random.shuffle(urna) 
                 extragere = set(random.sample(urna, 20))
+                
+                # EFECT VIZUAL: Încetinim DOAR începutul ca să vedem cifrele rulând
+                if i < 30:
+                    time.sleep(0.08) # Pauză scurtă pentru ochi
                 
                 if mele.issubset(extragere):
                     gasit = True
                     st.balloons()
                     
+                    # Ștergem monitorul de calcul și punem rezultatele
+                    monitor.empty()
                     st.markdown("### 📊 Rezultate Simulare (Mixed Mode)")
                     res_html = f"""
                     <div style='display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;'>
@@ -83,16 +90,16 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
                     t_col3.metric("Ani", ani)
                     break
                 
-                # --- ACTUALIZARE MONITOR (CLEPSIDRA) ---
-                if i % 25000 == 0: # Actualizăm mai des pentru efect vizual
+                # ACTUALIZARE CLEPSIDRĂ (La fiecare 20.000 extrageri)
+                if i % 20000 == 0 or i < 30:
                     elaps = time.time() - start_time
                     progress.progress(i / max_sim)
                     monitor.markdown(f"""
                         <div style='background:#1e1e1e; padding:20px; border-radius:10px; border-left: 5px solid #22d3ee;'>
                             <h4 style='color:#22d3ee; margin:0;'>⏳ ANALIZĂ ÎN CURS...</h4>
-                            <p style='font-family:monospace; font-size:20px; color:white; margin:10px 0;'>
+                            <p style='font-family:monospace; font-size:22px; color:white; margin:10px 0;'>
                                 🎲 Extrageri procesate: <b>{i:,}</b><br>
-                                ⏱️ Timp scurs: <b>{elaps:.1f} secunde</b>
+                                ⏱️ Timp scurs: <b>{elaps:.1f} sec</b>
                             </p>
                         </div>
                     """, unsafe_allow_html=True)
@@ -103,5 +110,6 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
         st.error("Eroare la procesare!")
 
 st.divider()
-st.caption("Simulator Mixed Mode | Real-Time Tracker | v1.6")
+st.caption("Simulator Mixed Mode | Real-Time Tracker | v1.6.1")
+
 
