@@ -5,7 +5,7 @@ import json
 import os
 
 # Configurare Pagina
-st.set_page_config(page_title="Loto Sim Pro v1.3", page_icon="🎰", layout="wide")
+st.set_page_config(page_title="Loto Sim Pro v1.4", page_icon="🎰", layout="wide")
 
 DB_FILE = "baza_sim_vizite.json"
 
@@ -33,7 +33,7 @@ st.write("---")
 # --- ZONA DE INPUT ---
 col_in1, col_in2 = st.columns(2)
 with col_in1:
-    tip_joc = st.selectbox("Câte numere verifici?", [1, 2, 3, 4, 5, 6, 7, 8], index=3)
+    tip_joc = st.selectbox("Câte numere verifici?", [1,2,3,4,5,6,7,8], index=3)
 with col_in2:
     input_numere = st.text_input("Introdu numerele:", "1 11 22 33")
 
@@ -56,13 +56,14 @@ if st.button("🚀 LANSEAZĂ SIMULAREA"):
                     gasit = True
                     st.balloons()
                     
-                    # --- REZULTATE CU FONT MIC (Stil Buton) ---
+                    # --- REZULTATE CU BACKGROUND ACCENTUAT (Stil Admin) ---
                     st.markdown("### 📊 Rezultate Simulare")
+                    # Pastile albastru inchis cu text alb
                     res_html = f"""
-                    <div style='display: flex; gap: 10px; flex-wrap: wrap;'>
-                        <span style='background:#f0f2f6; padding:5px 10px; border-radius:5px; font-size:14px;'>🔢 Nr: {sorted(list(mele))}</span>
-                        <span style='background:#f0f2f6; padding:5px 10px; border-radius:5px; font-size:14px;'>🎲 Extragere: {i:,}</span>
-                        <span style='background:#f0f2f6; padding:5px 10px; border-radius:5px; font-size:14px;'>⏱️ i5 Speed: {time.time()-start_time:.2f}s</span>
+                    <div style='display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;'>
+                        <span style='background:#003366; color:white; padding:8px 15px; border-radius:8px; font-size:16px; font-weight:bold; border: 1px solid #22d3ee;'>🔢 Nr: {sorted(list(mele))}</span>
+                        <span style='background:#003366; color:white; padding:8px 15px; border-radius:8px; font-size:16px; font-weight:bold; border: 1px solid #22d3ee;'>🎲 Extragere: {i:,}</span>
+                        <span style='background:#003366; color:white; padding:8px 15px; border-radius:8px; font-size:16px; font-weight:bold; border: 1px solid #22d3ee;'>⏱️ i5 Speed: {time.time()-start_time:.2f}s</span>
                     </div>
                     """
                     st.markdown(res_html, unsafe_allow_html=True)
@@ -90,5 +91,5 @@ if st.button("🚀 LANSEAZĂ SIMULAREA"):
         st.error("Eroare la procesare!")
 
 st.divider()
-st.caption("Simulator Profesional | i5 Cloud Engine")
+st.caption("Simulator Profesional | i5 Cloud Engine | v1.4")
 
