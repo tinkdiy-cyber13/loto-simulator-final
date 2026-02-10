@@ -105,5 +105,3 @@ if st.button("🎰 LANSEAZĂ SIMULAREA (MIXED)"):
 st.divider()
 st.caption("Simulator Mixed Mode | Real-Time Tracker | v1.6")
 
-
-
